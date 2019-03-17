@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:models="using:Astolfo.Core.Models"
     mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>
@@ -65,9 +66,15 @@
                                    Style="{ThemeResource TitleTextBlockStyle}"/>
                         <ComboBox VerticalAlignment="Center"
                                   Padding="12,18"
-
-
-                            />
+                                  MinWidth="240"
+                                  ItemsSource="{x:Bind ViewModel.Voices}"
+                                  SelectedItem="{x:Bind ViewModel.SelectedVoice, Mode=TwoWay}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="models:VoiceModel">
+                                    <TextBlock Text="{x:Bind VoiceComboBoxName}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
                         <Button Content="Load .csv"
                                 Command="{x:Bind ViewModel.ImportCsvCommand}"
                                 FontSize="24"
@@ -99,10 +106,20 @@
         <!-- Main Content -->
         <Grid Grid.Row="1" 
               Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+            
             <ListView x:Name="lvItems">
+                <!--<ListViewItem>
+                    <Grid>
+                        
+                    </Grid>
+                </ListViewItem>
 
-
-                
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:VoiceTextModel">
+                        
+                    </DataTemplate>
+                </ListView.ItemTemplate>-->
             </ListView>
             
         </Grid>
