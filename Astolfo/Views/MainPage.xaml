@@ -106,21 +106,38 @@
         <!-- Main Content -->
         <Grid Grid.Row="1" 
               Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            <Grid x:Name="gridLoadingCsv"
+                  Canvas.ZIndex="200"
+                  Background="{ThemeResource SystemControlAcrylicElementBrush}"
+                  Visibility="Collapsed">
+                <StackPanel Orientation="Vertical"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                    <ProgressRing Height="72"
+                              Width="72"
+                              IsActive="True"
+                              HorizontalAlignment="Center"/>
+                    <TextBlock Text="Loading..."
+                               HorizontalAlignment="Center"
+                               Margin="0,8"/>
+                    <Button Content="Cancel"
+                            HorizontalAlignment="Center"
+                            Style="{ThemeResource TextBlockButtonStyle}" />
+                </StackPanel>
+
+            </Grid>
 
             
-            <ListView x:Name="lvItems">
-                <!--<ListViewItem>
-                    <Grid>
-                        
-                    </Grid>
-                </ListViewItem>
+            <controls:DataGrid x:Name="dataGrid"
+                               Canvas.ZIndex="100"
+                               ItemsSource="{x:Bind ViewModel.Data, Mode=TwoWay}"
+                               AlternatingRowBackground="{ThemeResource SystemControlAcrylicElementBrush}"
+                               HeadersVisibility="Column">
 
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="models:VoiceTextModel">
-                        
-                    </DataTemplate>
-                </ListView.ItemTemplate>-->
-            </ListView>
+                
+            </controls:DataGrid>
+            
+
             
         </Grid>
     </Grid>

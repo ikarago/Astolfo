@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Astolfo.Core.Models;
 using Astolfo.Helpers;
+using Astolfo.Services;
 using Windows.Media.SpeechSynthesis;
 
 namespace Astolfo.ViewModels
@@ -48,6 +49,7 @@ namespace Astolfo.ViewModels
         {
             // Prepare the ObservableCollections
             _voices = new ObservableCollection<VoiceModel>();
+            _data = new ObservableCollection<VoiceTextModel>();
 
             // Get all the voices
             GetVoices();
@@ -66,7 +68,7 @@ namespace Astolfo.ViewModels
                     _importCsvCommand = new RelayCommand(
                         () =>
                         {
-                            // TODO
+                            ImportFromCsv();
                         });
                 }
                 return _importCsvCommand;
@@ -183,5 +185,10 @@ namespace Astolfo.ViewModels
         }
 
 
+        private void ImportFromCsv()
+        {
+            // TODO change this to use the actual method instead of the sample data
+            Data = ImportCsvService.UseSampleData();
+        }
     }
 }

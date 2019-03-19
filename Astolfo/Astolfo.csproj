@@ -122,6 +122,7 @@
     <Compile Include="Services\ActivationService.cs" />
     <Compile Include="Activation\DefaultLaunchActivationHandler.cs" />
     <Compile Include="Services\BackgroundTaskService.cs" />
+    <Compile Include="Services\ImportCsvService.cs" />
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="Services\OnBackgroundEnteringEventArgs.cs" />
     <Compile Include="Services\SuspendAndResumeService.cs" />
