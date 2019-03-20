@@ -5,6 +5,9 @@ using Astolfo.Core.Models;
 using Astolfo.Helpers;
 using Astolfo.Services;
 using Windows.Media.SpeechSynthesis;
+using Windows.Storage;
+using Windows.Storage.AccessCache;
+using Windows.Storage.Pickers;
 
 namespace Astolfo.ViewModels
 {
@@ -85,7 +88,7 @@ namespace Astolfo.ViewModels
                     _exportCommand = new RelayCommand(
                         () =>
                         {
-                            // TODO
+                            ExportAll();
                         });
                 }
                 return _exportCommand;
@@ -189,6 +192,41 @@ namespace Astolfo.ViewModels
         {
             // TODO change this to use the actual method instead of the sample data
             Data = ImportCsvService.UseSampleData();
+        }
+
+
+        private async void ExportAll()
+        {
+            // Let the user pick a folder
+            var picker = new FolderPicker();
+            picker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+            picker.FileTypeFilter.Add("*");
+            StorageFolder folder = await picker.PickSingleFolderAsync();
+            // Save the folder to the the FAL
+            StorageApplicationPermissions.FutureAccessList.Add(folder);
+
+            // Create the Speechsynth
+            var synth = new SpeechSynthesizer();
+
+
+            foreach (VoiceTextModel model in Data)
+            {
+                // Create the audiostream
+                // TODO TEMP, Set the voice (Make this properly in the Import n stuff)
+                if (model.Voice == null)
+                {
+                    model.Voice = SelectedVoice.Voice;
+                }
+                // Set the voice of the synth
+                if (model.Voice != null)
+                {
+                    synth.Voice = model.Voice;
+                }
+                SpeechSynthesisStream synthStream = await synth.SynthesizeTextToStreamAsync(model.Text);
+
+                // Export the file
+                model.SuccessfulExport = await ExportService.ExportOnForegroundTask(model, folder, synthStream);
+            }
         }
     }
 }
