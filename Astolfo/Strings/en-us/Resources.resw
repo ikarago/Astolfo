@@ -203,4 +203,7 @@ Suspendisse dui purus, scelerisque at, vulputate vitae, pretium mattis, nunc. Ma
   <data name="MainPage_AppTitle.Text" xml:space="preserve">
     <value>Astolfo</value>
   </data>
+  <data name="VoicedBy" xml:space="preserve">
+    <value>voiced by</value>
+  </data>
 </root>

@@ -225,7 +225,7 @@ namespace Astolfo.ViewModels
                 SpeechSynthesisStream synthStream = await synth.SynthesizeTextToStreamAsync(model.Text);
 
                 // Export the file
-                model.SuccessfulExport = await ExportService.ExportOnForegroundTask(model, folder, synthStream);
+                model.SuccessfulExport = await ExportService.ExportOnForegroundTask(model, folder, synthStream, ".mp3");
             }
         }
     }
