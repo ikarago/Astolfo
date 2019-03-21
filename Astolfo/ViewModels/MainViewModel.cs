@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Astolfo.Core.Models;
 using Astolfo.Helpers;
@@ -8,6 +10,7 @@ using Windows.Media.SpeechSynthesis;
 using Windows.Storage;
 using Windows.Storage.AccessCache;
 using Windows.Storage.Pickers;
+using Windows.UI.Xaml;
 
 namespace Astolfo.ViewModels
 {
@@ -27,6 +30,7 @@ namespace Astolfo.ViewModels
             get { return _completionValue; }
             set { Set(ref _completionValue, value); }
         }
+
 
         // List of Voices
         private ObservableCollection<VoiceModel> _voices;
@@ -48,6 +52,28 @@ namespace Astolfo.ViewModels
             }
         }
 
+        // List of file extentions
+        private ObservableCollection<string> _fileExtentions;
+        public ObservableCollection<string> FileExtentions
+        {
+            get { return _fileExtentions; }
+            set { Set(ref _fileExtentions, value); }
+        }
+        private string _selectedFileExtention;
+        public string SelectedFileExtention
+        {
+            get { return _selectedFileExtention; }
+            set { Set(ref _selectedFileExtention, value); }
+        }
+
+        // UX Triggers
+        private Visibility _uxLoadingCsv;
+        public Visibility UxLoadingCsv
+        {
+            get { return _uxLoadingCsv; }
+            set { Set(ref _uxLoadingCsv, value); }
+        }
+
 
         // Constructor
         public MainViewModel()
@@ -60,14 +86,21 @@ namespace Astolfo.ViewModels
             // Prepare the ObservableCollections
             _voices = new ObservableCollection<VoiceModel>();
             _data = new ObservableCollection<VoiceTextModel>();
+            _fileExtentions = new ObservableCollection<string>();
 
             // Set the progressbar to 0
             _completionValue = 0;
 
             // Get all the voices
             GetVoices();
-        }
+            GetSupportedFileExtentions();
 
+            // Set UX stuff
+            _completionValue = 0;
+            _selectedFileExtention = ".wav";    // This is not how you should do it, but sometimes I like dirty hacks :)
+
+            _uxLoadingCsv = Visibility.Collapsed;
+        }
 
 
         // Commands
@@ -197,13 +230,40 @@ namespace Astolfo.ViewModels
             }
         }
 
-
-        private void ImportFromCsv()
+        private void GetSupportedFileExtentions()
         {
-            // TODO change this to use the actual method instead of the sample data
-            Data = ImportCsvService.UseSampleData();
+            var device = Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().QualifierValues;
+            bool isDesktop = (device.ContainsKey("DeviceFamily") && device["DeviceFamily"] == "Desktop");
+            bool isXbox = (device.ContainsKey("DeviceFamily") && device["DeviceFamily"] == "Xbox");
+
+            // WAV is always supported, so this will be available for all platforms
+            FileExtentions.Add(".wav");
+
+            // Check whether the using is using Windows 10 Mobile, if true, only add .wav-export, because the codecs on Mobile are fucking retarded
+            if (isDesktop == true)
+            {
+                FileExtentions.Add(".mp3");
+                FileExtentions.Add(".wma");
+            }
+            else if (isXbox == true)
+            {
+                FileExtentions.Add(".wma");
+            }
         }
 
+
+
+        private async void ImportFromCsv()
+        {
+            // Show Load screen
+            UxLoadingCsv = Visibility.Visible;
+
+            // TODO change this to use the actual method instead of the sample data
+            Data = ImportCsvService.UseSampleData();
+
+            // Hide Load-screen
+            UxLoadingCsv = Visibility.Collapsed;
+        }
 
         private async void ExportAll()
         {
@@ -223,8 +283,6 @@ namespace Astolfo.ViewModels
 
             // Get the value of completion percentage
             double completetionAddValue = (double)100/ (double)Data.Count;
-            //completetionAddValue = Convert.ToDouble()
-
 
 
             foreach (VoiceTextModel model in Data)
@@ -243,7 +301,7 @@ namespace Astolfo.ViewModels
                 SpeechSynthesisStream synthStream = await synth.SynthesizeTextToStreamAsync(model.Text);
 
                 // Export the file
-                model.SuccessfulExport = await ExportService.ExportOnForegroundTask(model, folder, synthStream, ".mp3");
+                model.SuccessfulExport = await ExportService.ExportOnForegroundTask(model, folder, synthStream, SelectedFileExtention);
 
                 // Add a small percentage to the bar for the climb to the top
                 CompletionValue += completetionAddValue;

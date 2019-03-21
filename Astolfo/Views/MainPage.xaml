@@ -76,6 +76,10 @@
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>
+                        <ComboBox VerticalAlignment="Center"
+                                  Padding="12,18"
+                                  ItemsSource="{x:Bind ViewModel.FileExtentions, Mode=OneWay}"
+                                  SelectedItem="{x:Bind ViewModel.SelectedFileExtention, Mode=TwoWay}" />
                         <Button Content="Load .csv"
                                 Command="{x:Bind ViewModel.ImportCsvCommand}"
                                 FontSize="24"
@@ -118,7 +122,7 @@
             <Grid x:Name="gridLoadingCsv"
                   Canvas.ZIndex="200"
                   Background="{ThemeResource SystemControlAcrylicElementBrush}"
-                  Visibility="Collapsed">
+                  Visibility="{x:Bind ViewModel.UxLoadingCsv, Mode=OneWay}">
                 <StackPanel Orientation="Vertical"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center">
