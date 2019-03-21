@@ -21,6 +21,13 @@ namespace Astolfo.ViewModels
             set { Set(ref _data, value); }
         }
 
+        private double _completionValue;
+        public double CompletionValue
+        {
+            get { return _completionValue; }
+            set { Set(ref _completionValue, value); }
+        }
+
         // List of Voices
         private ObservableCollection<VoiceModel> _voices;
         public ObservableCollection<VoiceModel> Voices
@@ -53,6 +60,9 @@ namespace Astolfo.ViewModels
             // Prepare the ObservableCollections
             _voices = new ObservableCollection<VoiceModel>();
             _data = new ObservableCollection<VoiceTextModel>();
+
+            // Set the progressbar to 0
+            _completionValue = 0;
 
             // Get all the voices
             GetVoices();
@@ -197,6 +207,9 @@ namespace Astolfo.ViewModels
 
         private async void ExportAll()
         {
+            // Set the CompletionValue to 0
+            CompletionValue = 0;
+
             // Let the user pick a folder
             var picker = new FolderPicker();
             picker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
@@ -207,6 +220,11 @@ namespace Astolfo.ViewModels
 
             // Create the Speechsynth
             var synth = new SpeechSynthesizer();
+
+            // Get the value of completion percentage
+            double completetionAddValue = (double)100/ (double)Data.Count;
+            //completetionAddValue = Convert.ToDouble()
+
 
 
             foreach (VoiceTextModel model in Data)
@@ -226,6 +244,9 @@ namespace Astolfo.ViewModels
 
                 // Export the file
                 model.SuccessfulExport = await ExportService.ExportOnForegroundTask(model, folder, synthStream, ".mp3");
+
+                // Add a small percentage to the bar for the climb to the top
+                CompletionValue += completetionAddValue;
             }
         }
     }

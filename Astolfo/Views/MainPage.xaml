@@ -22,6 +22,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <!-- Titlebar -->
@@ -100,6 +101,14 @@
                     
                 </Grid>
                 <!-- END OF Header -->
+
+                <!-- Progress bar -->
+                <ProgressBar x:Name="pgbExport"
+                             Grid.Row="2"
+                             HorizontalAlignment="Stretch"
+                             Minimum="0"
+                             Maximum="100"
+                             Value="{x:Bind ViewModel.CompletionValue, Mode=OneWay}"/>
             </Grid>
         </controls:DropShadowPanel>
 
