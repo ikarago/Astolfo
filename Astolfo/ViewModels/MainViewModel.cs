@@ -259,9 +259,6 @@ namespace Astolfo.ViewModels
             // Show Load screen
             UxLoadingCsv = Visibility.Visible;
 
-            // TODO change this to use the actual method instead of the sample data
-            //Data = ImportCsvService.UseSampleData();
-
             // Get the file picker to select the .csv-file
             FileOpenPicker picker = new FileOpenPicker();
             picker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
@@ -277,11 +274,7 @@ namespace Astolfo.ViewModels
 
             await file.CopyAndReplaceAsync(tempfile);
 
-
-
-            //StorageApplicationPermissions.FutureAccessList.Add(file);
-
-            // Get data from the .csv-file
+            // Get data from the .xlsx-file
             // TODO Await this
             Data = ImportService.ImportFromXlsx(tempfile);
 
