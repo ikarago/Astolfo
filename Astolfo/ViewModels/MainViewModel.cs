@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Astolfo.Core.Models;
+using Astolfo.Core.Services;
 using Astolfo.Helpers;
 using Astolfo.Services;
 using Windows.Media.SpeechSynthesis;
@@ -259,7 +260,30 @@ namespace Astolfo.ViewModels
             UxLoadingCsv = Visibility.Visible;
 
             // TODO change this to use the actual method instead of the sample data
-            Data = ImportCsvService.UseSampleData();
+            //Data = ImportCsvService.UseSampleData();
+
+            // Get the file picker to select the .csv-file
+            FileOpenPicker picker = new FileOpenPicker();
+            picker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+            picker.ViewMode = PickerViewMode.List;
+
+            picker.FileTypeFilter.Add(".xlsx");
+
+            // Get the file
+            StorageFile file = await picker.PickSingleFileAsync();
+            // #DIRTY Copy file to the temp folder to avoid access denied stuff
+            ApplicationData appData = ApplicationData.Current;
+            StorageFile tempfile = await appData.TemporaryFolder.CreateFileAsync("temp.txt", CreationCollisionOption.ReplaceExisting);
+
+            await file.CopyAndReplaceAsync(tempfile);
+
+
+
+            //StorageApplicationPermissions.FutureAccessList.Add(file);
+
+            // Get data from the .csv-file
+            // TODO Await this
+            Data = ImportService.ImportFromXlsx(tempfile);
 
             // Hide Load-screen
             UxLoadingCsv = Visibility.Collapsed;
