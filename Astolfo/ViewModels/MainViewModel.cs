@@ -105,20 +105,20 @@ namespace Astolfo.ViewModels
 
 
         // Commands
-        private ICommand _importCsvCommand;
-        public ICommand ImportCsvCommand
+        private ICommand _importCommand;
+        public ICommand ImportCommand
         {
             get
             {
-                if (_importCsvCommand == null)
+                if (_importCommand == null)
                 {
-                    _importCsvCommand = new RelayCommand(
+                    _importCommand = new RelayCommand(
                         () =>
                         {
-                            ImportFromCsv();
+                            ImportFromXlsx();
                         });
                 }
-                return _importCsvCommand;
+                return _importCommand;
             }
         }
 
@@ -254,7 +254,7 @@ namespace Astolfo.ViewModels
 
 
 
-        private async void ImportFromCsv()
+        private async void ImportFromXlsx()
         {
             // Show Load screen
             UxLoadingCsv = Visibility.Visible;
@@ -273,7 +273,7 @@ namespace Astolfo.ViewModels
             StorageFile file = await picker.PickSingleFileAsync();
             // #DIRTY Copy file to the temp folder to avoid access denied stuff
             ApplicationData appData = ApplicationData.Current;
-            StorageFile tempfile = await appData.TemporaryFolder.CreateFileAsync("temp.txt", CreationCollisionOption.ReplaceExisting);
+            StorageFile tempfile = await appData.TemporaryFolder.CreateFileAsync("temp.xlsx", CreationCollisionOption.ReplaceExisting);
 
             await file.CopyAndReplaceAsync(tempfile);
 
