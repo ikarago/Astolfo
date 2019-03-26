@@ -1,8 +1,8 @@
 # Astolfo
-Astolfo is a specialized tool for mass creating TTS audio-files from a .csv-file that has been created for 
+Astolfo is a specialized tool for mass creating TTS audio-files from a .xlsx-file that has been created for 
 use by [Avina Education](https://www.avina-education.org/).
 
-The code is based on the Talkinator project (https://github.com/ikarago/Talkinator) with various alterations to fit the needs of this app.
+The code is based on the [Talkinator project](https://github.com/ikarago/Talkinator) with various alterations to fit the needs of this app.
 
 
 
