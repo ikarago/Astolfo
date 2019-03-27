@@ -8,6 +8,7 @@ using Astolfo.Core.Models;
 using Astolfo.Core.Services;
 using Astolfo.Helpers;
 using Astolfo.Services;
+using Astolfo.Views.Dialogs;
 using Windows.Media.SpeechSynthesis;
 using Windows.Storage;
 using Windows.Storage.AccessCache;
@@ -230,7 +231,7 @@ namespace Astolfo.ViewModels
                     _settingsCommand = new RelayCommand(
                     () =>
                     {
-                        // TODO
+                        ShowSettingsDialog();
                     });
                 }
                 return _settingsCommand;
@@ -247,7 +248,7 @@ namespace Astolfo.ViewModels
                     _aboutCommand = new RelayCommand(
                         () =>
                         {
-                            // TODO
+                            ShowAboutDialog();
                         });
                 }
                 return _aboutCommand;
@@ -393,6 +394,18 @@ namespace Astolfo.ViewModels
             // Display list of failed items
             FailedExportData = failedData;
             // #TODO Trigger the list to show up
+        }
+
+        private async void ShowAboutDialog()
+        {
+            var dialog = new AboutDialog();
+            await dialog.ShowAsync();
+        }
+
+        private async void ShowSettingsDialog()
+        {
+            var dialog = new SettingsDialog();
+            await dialog.ShowAsync();
         }
     }
 }
