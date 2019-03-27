@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Astolfo.Core.Models;
@@ -25,14 +26,35 @@ namespace Astolfo.ViewModels
             set { Set(ref _data, value); }
         }
 
+        private ObservableCollection<VoiceTextModel> _failedExportData;
+        public ObservableCollection<VoiceTextModel> FailedExportData
+        {
+            get { return _failedExportData; }
+            set { Set(ref _failedExportData, value); }
+        }
+
+        // Export completion numbers
+        private int _completionCurrentlyExporting;
+        public int CompletionCurrentlyExporting
+        {
+            get { return _completionCurrentlyExporting; }
+            set { Set(ref _completionCurrentlyExporting, value); }
+        }
+
+        private int _completionTotal;
+        public int CompletionTotal
+        {
+            get { return _completionTotal; }
+            set { Set(ref _completionTotal, value); }
+        }
+
         private double _completionValue;
         public double CompletionValue
         {
             get { return _completionValue; }
             set { Set(ref _completionValue, value); }
         }
-
-
+        
         // List of Voices
         private ObservableCollection<VoiceModel> _voices;
         public ObservableCollection<VoiceModel> Voices
@@ -75,6 +97,27 @@ namespace Astolfo.ViewModels
             set { Set(ref _uxLoadingCsv, value); }
         }
 
+        private Visibility _uxExportUi;
+        public Visibility UxExportUi
+        {
+            get { return _uxExportUi; }
+            set { Set(ref _uxExportUi, value); }
+        }
+
+        private Visibility _uxShowExportComplete;
+        public Visibility UxShowExportComplete
+        {
+            get { return _uxShowExportComplete; }
+            set { Set(ref _uxShowExportComplete, value); }
+        }
+
+        private Visibility _uxShowFailureList;
+        public Visibility UxShowFailureList
+        {
+            get { return _uxShowFailureList; }
+            set { Set(ref _uxShowFailureList, value); }
+        }
+
 
         // Constructor
         public MainViewModel()
@@ -87,9 +130,12 @@ namespace Astolfo.ViewModels
             // Prepare the ObservableCollections
             _voices = new ObservableCollection<VoiceModel>();
             _data = new ObservableCollection<VoiceTextModel>();
+            _failedExportData = new ObservableCollection<VoiceTextModel>();
             _fileExtentions = new ObservableCollection<string>();
 
             // Set the progressbar to 0
+            _completionCurrentlyExporting = 0;
+            _completionTotal = 0;
             _completionValue = 0;
 
             // Get all the voices
@@ -286,6 +332,8 @@ namespace Astolfo.ViewModels
         {
             // Set the CompletionValue to 0
             CompletionValue = 0;
+            // Create an empty ObservableCollection to keep track of the failed items
+            ObservableCollection<VoiceTextModel> failedData = new ObservableCollection<VoiceTextModel>();
 
             // Let the user pick a folder
             var picker = new FolderPicker();
@@ -298,31 +346,53 @@ namespace Astolfo.ViewModels
             // Create the Speechsynth
             var synth = new SpeechSynthesizer();
 
+            // Set completion stuff
+            CompletionCurrentlyExporting = 0;
+            CompletionTotal = Data.Count;
             // Get the value of completion percentage
             double completetionAddValue = (double)100/ (double)Data.Count;
 
 
             foreach (VoiceTextModel model in Data)
             {
-                // Create the audiostream
-                // TODO TEMP, Set the voice (Make this properly in the Import n stuff)
-                if (model.Voice == null)
+                if (model.Text != null)
                 {
-                    model.Voice = SelectedVoice.Voice;
+                    // Create the audiostream
+                    // #TODO TEMP, Set the voice (Make this properly in the Import n stuff)
+                    if (model.Voice == null)
+                    {
+                        model.Voice = SelectedVoice.Voice;
+                    }
+                    // Set the voice of the synth
+                    if (model.Voice != null)
+                    {
+                        synth.Voice = model.Voice;
+                    }
+                    SpeechSynthesisStream synthStream = await synth.SynthesizeTextToStreamAsync(model.Text);
+
+                    // Export the file
+                    model.SuccessfulExport = await ExportService.ExportOnForegroundTask(model, folder, synthStream, SelectedFileExtention);
+
+                    // Add a small percentage to the bar for the climb to the top
+                    CompletionCurrentlyExporting++;
+                    CompletionValue += completetionAddValue;
                 }
-                // Set the voice of the synth
-                if (model.Voice != null)
+                else
                 {
-                    synth.Voice = model.Voice;
+                    Debug.WriteLine("Could not export " + model.Key + " - TTS Text property is null");
+                    model.SuccessfulExport = false;
+                    // Add to the failed list
+                    failedData.Add(model);
+
+                    // Increase the completion rate
+                    CompletionCurrentlyExporting++;
+                    CompletionValue += completetionAddValue;
                 }
-                SpeechSynthesisStream synthStream = await synth.SynthesizeTextToStreamAsync(model.Text);
-
-                // Export the file
-                model.SuccessfulExport = await ExportService.ExportOnForegroundTask(model, folder, synthStream, SelectedFileExtention);
-
-                // Add a small percentage to the bar for the climb to the top
-                CompletionValue += completetionAddValue;
             }
+
+            // Display list of failed items
+            FailedExportData = failedData;
+            // #TODO Trigger the list to show up
         }
     }
 }

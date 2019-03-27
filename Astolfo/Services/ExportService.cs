@@ -24,20 +24,21 @@ namespace Astolfo.Services
     public static class ExportService
     {
         // Public Methods
+
+        // #TODO Do the export task in the background
+
         public static async Task<bool> ExportOnForegroundTask(VoiceTextModel model, StorageFolder folder, SpeechSynthesisStream synthStream, string fileExtention)
         {
             bool success = false;
-            //string fileExtention = ".wav";
-
-            // TODO Check in what file format stuff needs to be exported
 
             // Filenames ---> Key - Voice Name - (x)
 
-            // As WAV
+            // As a converted file
             if (fileExtention == ".wma" || fileExtention == ".mp3" || fileExtention == ".m4a")
             {
                 success = await SaveAndEncodeFile(model, folder, synthStream, fileExtention);
             }
+            // As a .wav-file
             else if (fileExtention == ".wav")
             {
                 try
@@ -163,12 +164,5 @@ namespace Astolfo.Services
 
             return success;
         }
-
-
-        // TODO Do the export task in the background
-        // TODO Set the export to a single folder
-
-
-
     }
 }

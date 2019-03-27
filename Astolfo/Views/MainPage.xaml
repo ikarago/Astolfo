@@ -135,6 +135,7 @@
                                Margin="0,8"/>
                     <Button Content="Cancel"
                             HorizontalAlignment="Center"
+                            Visibility="Collapsed"
                             Style="{ThemeResource TextBlockButtonStyle}" />
                 </StackPanel>
 
