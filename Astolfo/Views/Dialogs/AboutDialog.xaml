@@ -144,7 +144,7 @@
 
                     <!-- EPPlus -->
                     <HyperlinkButton x:Uid="About_AcknowledgementsEPPlus"
-                                     Content="EPPles"
+                                     Content="EPPlus"
                                      NavigateUri="https://github.com/JanKallman/EPPlus"/>
 
                     <!-- Talkinator -->
