@@ -38,7 +38,7 @@
                                Margin="16,0"
                                Source="/Assets/Logo/contrast-standard/Square44x44Logo.altform-unplated_targetsize-256.png" />
                         <TextBlock x:Uid="MainPage_AppTitle"
-                                   Text="Astolfo"
+                                   Text="Astolfo (Prototype)"
                                    Style="{ThemeResource CaptionTextBlockStyle}"
                                    RequestedTheme="Dark"
                                    Margin="4,0,12,0"
