@@ -314,16 +314,23 @@ namespace Astolfo.ViewModels
             picker.FileTypeFilter.Add(".xlsx");
 
             // Get the file
-            StorageFile file = await picker.PickSingleFileAsync();
-            // #DIRTY Copy file to the temp folder to avoid access denied stuff
-            ApplicationData appData = ApplicationData.Current;
-            StorageFile tempfile = await appData.TemporaryFolder.CreateFileAsync("temp.xlsx", CreationCollisionOption.ReplaceExisting);
+            try
+            {
+                StorageFile file = await picker.PickSingleFileAsync();
+                // #DIRTY Copy file to the temp folder to avoid access denied stuff
+                ApplicationData appData = ApplicationData.Current;
+                StorageFile tempfile = await appData.TemporaryFolder.CreateFileAsync("temp.xlsx", CreationCollisionOption.ReplaceExisting);
 
-            await file.CopyAndReplaceAsync(tempfile);
+                await file.CopyAndReplaceAsync(tempfile);
 
-            // Get data from the .xlsx-file
-            // TODO Await this
-            Data = ImportService.ImportFromXlsx(tempfile);
+                // Get data from the .xlsx-file
+                // TODO Await this
+                Data = ImportService.ImportFromXlsx(tempfile);
+            }
+            catch
+            {
+                Debug.WriteLine("MainViewModel - ImportFromXlsx() - No item selected in picker.");
+            }
 
             // Hide Load-screen
             UxLoadingCsv = Visibility.Collapsed;
@@ -331,6 +338,13 @@ namespace Astolfo.ViewModels
 
         private async void ExportAll()
         {
+            // Check if there is actual data to export
+            if (Data.Count == 0)
+            {
+                Debug.WriteLine("MainViewModel - ExportAll() - No data to actually export. You idiot!");
+                return;
+            }
+
             // Set the CompletionValue to 0
             CompletionValue = 0;
             // Create an empty ObservableCollection to keep track of the failed items
@@ -342,64 +356,72 @@ namespace Astolfo.ViewModels
             var picker = new FolderPicker();
             picker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
             picker.FileTypeFilter.Add("*");
-            StorageFolder folder = await picker.PickSingleFolderAsync();
-            // Save the folder to the the FAL
-            StorageApplicationPermissions.FutureAccessList.Add(folder);
-
-            // Create the Speechsynth
-            var synth = new SpeechSynthesizer();
-
-            // Set completion stuff
-            CompletionCurrentlyExporting = 0;
-            CompletionTotal = Data.Count;
-            // Get the value of completion percentage
-            double completetionAddValue = (double)100/ (double)Data.Count;
-
-
-            foreach (VoiceTextModel model in Data)
+            try
             {
-                if (model.Text != null)
+                StorageFolder folder = await picker.PickSingleFolderAsync();
+
+                // Save the folder to the the FAL
+                StorageApplicationPermissions.FutureAccessList.Add(folder);
+
+                // Create the Speechsynth
+                var synth = new SpeechSynthesizer();
+
+                // Set completion stuff
+                CompletionCurrentlyExporting = 0;
+                CompletionTotal = Data.Count;
+                // Get the value of completion percentage
+                double completetionAddValue = (double)100 / (double)Data.Count;
+
+
+                foreach (VoiceTextModel model in Data)
                 {
-                    // Create the audiostream
-                    // #TODO TEMP, Set the voice (Make this properly in the Import n stuff)
-                    if (model.Voice == null)
+                    if (model.Text != null)
                     {
-                        model.Voice = SelectedVoice.Voice;
+                        // Create the audiostream
+                        // #TODO TEMP, Set the voice (Make this properly in the Import n stuff)
+                        if (model.Voice == null)
+                        {
+                            model.Voice = SelectedVoice.Voice;
+                        }
+                        // Set the voice of the synth
+                        if (model.Voice != null)
+                        {
+                            synth.Voice = model.Voice;
+                        }
+                        SpeechSynthesisStream synthStream = await synth.SynthesizeTextToStreamAsync(model.Text);
+
+                        // Export the file
+                        model.SuccessfulExport = await ExportService.ExportOnForegroundTask(model, folder, synthStream, SelectedFileExtention);
+
+                        // Add a small percentage to the bar for the climb to the top
+                        CompletionCurrentlyExporting++;
+                        CompletionValue += completetionAddValue;
                     }
-                    // Set the voice of the synth
-                    if (model.Voice != null)
+                    else
                     {
-                        synth.Voice = model.Voice;
+                        Debug.WriteLine("Could not export " + model.Key + " - TTS Text property is null");
+                        model.SuccessfulExport = false;
+                        // Add to the failed list
+                        failedData.Add(model);
+
+                        // Increase the completion rate
+                        CompletionCurrentlyExporting++;
+                        CompletionValue += completetionAddValue;
                     }
-                    SpeechSynthesisStream synthStream = await synth.SynthesizeTextToStreamAsync(model.Text);
-
-                    // Export the file
-                    model.SuccessfulExport = await ExportService.ExportOnForegroundTask(model, folder, synthStream, SelectedFileExtention);
-
-                    // Add a small percentage to the bar for the climb to the top
-                    CompletionCurrentlyExporting++;
-                    CompletionValue += completetionAddValue;
                 }
-                else
-                {
-                    Debug.WriteLine("Could not export " + model.Key + " - TTS Text property is null");
-                    model.SuccessfulExport = false;
-                    // Add to the failed list
-                    failedData.Add(model);
 
-                    // Increase the completion rate
-                    CompletionCurrentlyExporting++;
-                    CompletionValue += completetionAddValue;
+                // Display list of failed items
+                FailedExportData = failedData;
+                if (FailedExportData.Count != 0 && FailedExportData != null)
+                {
+                    UxShowFailureList = Visibility.Visible;
                 }
             }
-
-            // Display list of failed items
-            FailedExportData = failedData;
-            if (FailedExportData.Count != 0 && FailedExportData != null)
+            catch
             {
-                UxShowFailureList = Visibility.Visible;
+                Debug.WriteLine("MainViewModel - ExportAll() - No folder selected in picker.");
+                return;
             }
-            // #TODO Trigger the list to show up
         }
 
         private async void ShowAboutDialog()
