@@ -335,6 +335,8 @@ namespace Astolfo.ViewModels
             CompletionValue = 0;
             // Create an empty ObservableCollection to keep track of the failed items
             ObservableCollection<VoiceTextModel> failedData = new ObservableCollection<VoiceTextModel>();
+            // Hide the Failed items list (if it's open)
+            UxShowFailureList = Visibility.Collapsed;
 
             // Let the user pick a folder
             var picker = new FolderPicker();
@@ -393,6 +395,10 @@ namespace Astolfo.ViewModels
 
             // Display list of failed items
             FailedExportData = failedData;
+            if (FailedExportData.Count != 0 && FailedExportData != null)
+            {
+                UxShowFailureList = Visibility.Visible;
+            }
             // #TODO Trigger the list to show up
         }
 
