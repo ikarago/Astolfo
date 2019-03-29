@@ -5,7 +5,9 @@ using Astolfo.Helpers;
 
 using Windows.ApplicationModel.Core;
 using Windows.Storage;
+using Windows.UI;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 
 namespace Astolfo.Services
@@ -38,8 +40,39 @@ namespace Astolfo.Services
                     if (Window.Current.Content is FrameworkElement frameworkElement)
                     {
                         frameworkElement.RequestedTheme = Theme;
+                        SetTitlebarButtonColour();
                     }
                 });
+            }
+        }
+
+        private static void SetTitlebarButtonColour()
+        {
+            // Make the buttons transparent
+            ApplicationViewTitleBar titlebar = ApplicationView.GetForCurrentView().TitleBar;
+            titlebar.ButtonBackgroundColor = Colors.Transparent;
+            titlebar.ButtonInactiveBackgroundColor = Colors.Transparent;
+
+            // Set the foreground colour depending on the current theme
+            // #TODO: Simplify this
+            if (Theme == ElementTheme.Dark)
+            {
+                titlebar.ButtonForegroundColor = Colors.White;
+            }
+            else if (Theme == ElementTheme.Light)
+            {
+                titlebar.ButtonForegroundColor = Colors.Black;
+            }
+            else if (Theme == ElementTheme.Default)
+            {
+                if (App.Current.RequestedTheme == ApplicationTheme.Dark)
+                {
+                    titlebar.ButtonForegroundColor = Colors.White;
+                }
+                else if (App.Current.RequestedTheme == ApplicationTheme.Light)
+                {
+                    titlebar.ButtonForegroundColor = Colors.Black;
+                }
             }
         }
 
