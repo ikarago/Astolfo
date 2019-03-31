@@ -7,6 +7,8 @@ The code is based on the [Talkinator project](https://github.com/ikarago/Talkina
 
 
 ## Get the app
+**The easy way**: You can download the app from the [Microsoft Store](https://www.microsoft.com/store/apps/9N7S45HPWF8L).
+
 **For purists**: you can build and tinker with the project yourself.
 
 
