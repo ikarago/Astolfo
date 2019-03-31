@@ -45,8 +45,11 @@ namespace Astolfo.Services
                 {
                     using (var reader = new DataReader(synthStream))
                     {
+                        // Remove spacing from the Voice DisplayName and store this in a string that'll be used for the filename
+                        string exportVoiceName = model.Voice.DisplayName.Replace(" ", string.Empty);
+
                         // Get the StorageFile to put it in
-                        StorageFile file = await folder.CreateFileAsync((model.Key + "-" + model.Voice.DisplayName + fileExtention), CreationCollisionOption.GenerateUniqueName);
+                        StorageFile file = await folder.CreateFileAsync((model.Key + "-" + exportVoiceName + fileExtention), CreationCollisionOption.GenerateUniqueName);
 
                         // Create the buffer
                         await reader.LoadAsync((uint)synthStream.Size);
@@ -124,8 +127,12 @@ namespace Astolfo.Services
 
 
             // Create a file in the folder
+
+            // Remove spacing from the Voice DisplayName and store this in a string that'll be used for the filename
+            string exportVoiceName = model.Voice.DisplayName.Replace(" ", string.Empty);
+
             // Get the StorageFile to put it in
-            StorageFile file = await folder.CreateFileAsync((model.Key + "-" + model.Voice.DisplayName + fileExtention), CreationCollisionOption.GenerateUniqueName);
+            StorageFile file = await folder.CreateFileAsync((model.Key + "-" + exportVoiceName + fileExtention), CreationCollisionOption.GenerateUniqueName);
 
 
             // Prepare transcoding files
