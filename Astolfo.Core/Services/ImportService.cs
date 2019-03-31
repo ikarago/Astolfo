@@ -26,7 +26,7 @@ namespace Astolfo.Core.Services
 
                 // Go though all the rows and get the data.
                 //  Starting at row 2 though, because row 1 has header info we don't want in our items
-                for (int currentRow = 2; currentRow < maxRows; currentRow++)
+                for (int currentRow = 2; currentRow <= maxRows; currentRow++)
                 {
                     // Build the query
                     // #TODO Make this less crap and more streamlined
