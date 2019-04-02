@@ -200,6 +200,8 @@
             <controls:DataGrid x:Name="dataGrid"
                                Canvas.ZIndex="100"
                                ItemsSource="{x:Bind ViewModel.Data, Mode=TwoWay}"
+                               AutoGenerateColumns="True"
+                               AutoGeneratingColumn="DataGrid_AutoGeneratingColumn"
                                AlternatingRowBackground="{ThemeResource SystemControlAcrylicElementBrush}"
                                HeadersVisibility="Column">
 

@@ -408,6 +408,7 @@ namespace Astolfo.ViewModels
                         // Increase the completion rate
                         CompletionCurrentlyExporting++;
                         CompletionValue += completetionAddValue;
+                        Data = Data;
                     }
                 }
 
