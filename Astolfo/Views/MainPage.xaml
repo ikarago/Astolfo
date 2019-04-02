@@ -14,13 +14,6 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid.Transitions>
-            <TransitionCollection>
-                <ContentThemeTransition />
-                <RepositionThemeTransition />
-            </TransitionCollection>
-        </Grid.Transitions>
-
         <!-- Topbars -->
         <controls:DropShadowPanel Grid.Row="0"
                                   Canvas.ZIndex="400"
@@ -57,6 +50,15 @@
                 <!-- Header -->
                 <Grid Grid.Row="1"
                       Height="128">
+
+                    <Grid.ChildrenTransitions>
+                        <TransitionCollection>
+                            <ContentThemeTransition />
+                            <EntranceThemeTransition />
+                            <RepositionThemeTransition />
+                        </TransitionCollection>
+                    </Grid.ChildrenTransitions>
+                    
                     <TextBlock Text="Export"
                                FontSize="32"
                                FontWeight="Bold"
@@ -107,7 +109,8 @@
                                 FontSize="24"
                                 FontWeight="SemiBold"
                                 Padding="24,12"
-                                Margin="12,0"/>
+                                Margin="12,0"
+                                Style="{ThemeResource ButtonRevealStyle}"/>
                         <Button Content="Start Export "
                                 Command="{x:Bind ViewModel.ExportCommand}"
                                 Background="{ThemeResource SystemControlBackgroundAccentBrush}"
@@ -115,13 +118,14 @@
                                 FontWeight="SemiBold"
                                 Padding="24,12"
                                 RequestedTheme="Dark"
+                                Style="{ThemeResource ButtonRevealStyle}"
                                 Visibility="{x:Bind ViewModel.UxExportUi, Mode=OneWay}"/>
                         <Button Content="..."
                                 FontSize="24"
                                 FontWeight="SemiBold"
                                 Padding="24,12"
                                 Margin="12,0"
-                                RequestedTheme="Dark">
+                                Style="{ThemeResource ButtonRevealStyle}">
                             <Button.Flyout>
                                 <MenuFlyout>
                                     <MenuFlyoutItem Text="Settings"
@@ -233,6 +237,8 @@
                                Canvas.ZIndex="100"
                                Visibility="{x:Bind ViewModel.UxExportUi, Mode=OneWay}"
                                ItemsSource="{x:Bind ViewModel.Data, Mode=TwoWay}"
+                               HorizontalAlignment="Stretch"
+                               VerticalAlignment="Stretch"
                                AutoGenerateColumns="True"
                                AutoGeneratingColumn="DataGrid_AutoGeneratingColumn"
                                AlternatingRowBackground="{ThemeResource SystemControlAcrylicElementBrush}"
