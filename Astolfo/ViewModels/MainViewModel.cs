@@ -98,6 +98,13 @@ namespace Astolfo.ViewModels
             set { Set(ref _uxLoadingCsv, value); }
         }
 
+        private Visibility _uxStartUi;
+        public Visibility UxStartUi
+        {
+            get { return _uxStartUi; }
+            set { Set(ref _uxStartUi, value); }
+        }
+
         private Visibility _uxExportUi;
         public Visibility UxExportUi
         {
@@ -148,7 +155,10 @@ namespace Astolfo.ViewModels
             _selectedFileExtention = ".wav";    // This is not how you should do it, but sometimes I like dirty hacks :)
 
             _uxLoadingCsv = Visibility.Collapsed;
+            _uxExportUi = Visibility.Collapsed;
             _uxShowFailureList = Visibility.Collapsed;
+
+            _uxStartUi = Visibility.Visible;
         }
 
 
@@ -327,6 +337,10 @@ namespace Astolfo.ViewModels
                 // Get data from the .xlsx-file
                 // TODO Await this
                 Data = ImportService.ImportFromXlsx(tempfile);
+
+                // Hide the start UI, show Export UI
+                UxStartUi = Visibility.Collapsed;
+                UxExportUi = Visibility.Visible;
             }
             catch
             {

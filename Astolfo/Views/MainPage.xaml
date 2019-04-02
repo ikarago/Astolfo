@@ -14,6 +14,13 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <Grid.Transitions>
+            <TransitionCollection>
+                <ContentThemeTransition />
+                <RepositionThemeTransition />
+            </TransitionCollection>
+        </Grid.Transitions>
+
         <!-- Topbars -->
         <controls:DropShadowPanel Grid.Row="0"
                                   Canvas.ZIndex="400"
@@ -56,6 +63,18 @@
                                VerticalAlignment="Center"
                                HorizontalAlignment="Left"
                                Margin="24,0"/>
+
+                    <!-- Progress indicator -->
+                    <StackPanel Orientation="Horizontal"
+                                Margin="12"
+                                Visibility="{x:Bind ViewModel.UxExportUi, Mode=OneWay}"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Bottom">
+                        <TextBlock Text="Progress: "/>
+                        <TextBlock Text="{x:Bind ViewModel.CompletionCurrentlyExporting, Mode=OneWay}" />
+                        <TextBlock Text="/" />
+                        <TextBlock Text="{x:Bind ViewModel.CompletionTotal, Mode=OneWay}" />
+                    </StackPanel>
                     <!-- Buttons -->
                     <StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Right"
@@ -64,10 +83,12 @@
                         <TextBlock Text="Standard voice:"
                                    VerticalAlignment="Center"
                                    Margin="12,0"
+                                   Visibility="{x:Bind ViewModel.UxExportUi, Mode=OneWay}"
                                    Style="{ThemeResource TitleTextBlockStyle}"/>
                         <ComboBox VerticalAlignment="Center"
                                   Padding="12,18"
                                   MinWidth="240"
+                                  Visibility="{x:Bind ViewModel.UxExportUi, Mode=OneWay}"
                                   ItemsSource="{x:Bind ViewModel.Voices}"
                                   SelectedItem="{x:Bind ViewModel.SelectedVoice, Mode=TwoWay}">
                             <ComboBox.ItemTemplate>
@@ -78,6 +99,7 @@
                         </ComboBox>
                         <ComboBox VerticalAlignment="Center"
                                   Padding="12,18"
+                                  Visibility="{x:Bind ViewModel.UxExportUi, Mode=OneWay}"
                                   ItemsSource="{x:Bind ViewModel.FileExtentions, Mode=OneWay}"
                                   SelectedItem="{x:Bind ViewModel.SelectedFileExtention, Mode=TwoWay}" />
                         <Button Content="Load .xlsx"
@@ -92,7 +114,8 @@
                                 FontSize="24"
                                 FontWeight="SemiBold"
                                 Padding="24,12"
-                                RequestedTheme="Dark"/>
+                                RequestedTheme="Dark"
+                                Visibility="{x:Bind ViewModel.UxExportUi, Mode=OneWay}"/>
                         <Button Content="..."
                                 FontSize="24"
                                 FontWeight="SemiBold"
@@ -196,9 +219,19 @@
 
             </Grid>
 
+            <Grid Canvas.ZIndex="50"
+                  Visibility="{x:Bind ViewModel.UxStartUi, Mode=OneWay}">
+                <TextBlock Text="Import an .xlsx-file above to continue..."
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontWeight="Semibold"
+                           Style="{ThemeResource TitleTextBlockStyle}"/>
+            </Grid>
+
             
             <controls:DataGrid x:Name="dataGrid"
                                Canvas.ZIndex="100"
+                               Visibility="{x:Bind ViewModel.UxExportUi, Mode=OneWay}"
                                ItemsSource="{x:Bind ViewModel.Data, Mode=TwoWay}"
                                AutoGenerateColumns="True"
                                AutoGeneratingColumn="DataGrid_AutoGeneratingColumn"
