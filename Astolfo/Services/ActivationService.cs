@@ -103,7 +103,7 @@ namespace Astolfo.Services
 
         private async Task InitializeAsync()
         {
-            await Singleton<BackgroundTaskService>.Instance.RegisterBackgroundTasksAsync();
+            //await Singleton<BackgroundTaskService>.Instance.RegisterBackgroundTasksAsync();
             await ThemeSelectorService.InitializeAsync();
         }
 
@@ -115,7 +115,7 @@ namespace Astolfo.Services
 
         private IEnumerable<ActivationHandler> GetActivationHandlers()
         {
-            yield return Singleton<BackgroundTaskService>.Instance;
+            //yield return Singleton<BackgroundTaskService>.Instance;
             yield return Singleton<SuspendAndResumeService>.Instance;
         }
 
