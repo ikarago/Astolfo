@@ -1,6 +1,11 @@
-﻿using Windows.Media.SpeechSynthesis;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Windows.Media.SpeechSynthesis;
 
-namespace Astolfo.Core.Models
+namespace Astolfo.Models
 {
     public class VoiceTextModel
     {

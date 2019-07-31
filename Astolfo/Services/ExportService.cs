@@ -1,4 +1,4 @@
-﻿using Astolfo.Core.Models;
+﻿using Astolfo.Models;
 using Astolfo.Helpers;
 using System;
 using System.Collections.Generic;

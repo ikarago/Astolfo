@@ -1,4 +1,4 @@
-﻿using Astolfo.Core.Models;
+﻿using Astolfo.Models;
 using OfficeOpenXml;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -6,7 +6,8 @@ using System.IO;
 using System.Linq;
 using Windows.Storage;
 
-namespace Astolfo.Core.Services
+
+namespace Astolfo.Services
 {
     public static class ImportService
     {
