@@ -60,8 +60,7 @@
                     </Grid.ChildrenTransitions>
                     
                     <TextBlock Text="Export"
-                               FontSize="32"
-                               FontWeight="Bold"
+                               Style="{ThemeResource FluentHeaderTextStyle}"
                                VerticalAlignment="Center"
                                HorizontalAlignment="Left"
                                Margin="24,0"/>
@@ -86,10 +85,12 @@
                                    VerticalAlignment="Center"
                                    Margin="12,0"
                                    Visibility="{x:Bind ViewModel.UxExportUi, Mode=OneWay}"
-                                   Style="{ThemeResource TitleTextBlockStyle}"/>
+                                   Style="{ThemeResource FluentTitleTextStyle}"/>
                         <ComboBox VerticalAlignment="Center"
                                   Padding="12,18"
                                   MinWidth="240"
+                                  CornerRadius="2,0,0,2"
+                                  Style="{ThemeResource FluentComboBoxStyle}"
                                   Visibility="{x:Bind ViewModel.UxExportUi, Mode=OneWay}"
                                   ItemsSource="{x:Bind ViewModel.Voices}"
                                   SelectedItem="{x:Bind ViewModel.SelectedVoice, Mode=TwoWay}">
@@ -101,6 +102,8 @@
                         </ComboBox>
                         <ComboBox VerticalAlignment="Center"
                                   Padding="12,18"
+                                  CornerRadius="0,2,2,0"
+                                  Style="{ThemeResource FluentComboBoxStyle}"
                                   Visibility="{x:Bind ViewModel.UxExportUi, Mode=OneWay}"
                                   ItemsSource="{x:Bind ViewModel.FileExtentions, Mode=OneWay}"
                                   SelectedItem="{x:Bind ViewModel.SelectedFileExtention, Mode=TwoWay}" />
@@ -110,22 +113,21 @@
                                 FontWeight="SemiBold"
                                 Padding="24,12"
                                 Margin="12,0"
-                                Style="{ThemeResource ButtonRevealStyle}"/>
+                                Style="{ThemeResource FluentButtonStandardStyle}"/>
                         <Button Content="Start Export "
                                 Command="{x:Bind ViewModel.ExportCommand}"
-                                Background="{ThemeResource SystemControlBackgroundAccentBrush}"
                                 FontSize="24"
                                 FontWeight="SemiBold"
                                 Padding="24,12"
                                 RequestedTheme="Dark"
-                                Style="{ThemeResource ButtonRevealStyle}"
+                                Style="{ThemeResource FluentButtonAccentStyle}"
                                 Visibility="{x:Bind ViewModel.UxExportUi, Mode=OneWay}"/>
                         <Button Content="..."
                                 FontSize="24"
                                 FontWeight="SemiBold"
                                 Padding="24,12"
                                 Margin="12,0"
-                                Style="{ThemeResource ButtonRevealStyle}">
+                                Style="{ThemeResource FluentButtonStandardStyle}">
                             <Button.Flyout>
                                 <MenuFlyout>
                                     <MenuFlyoutItem Text="Settings"
@@ -176,8 +178,7 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <TextBlock Text="Failed to export:"
-                           Style="{ThemeResource TitleTextBlockStyle}"
-                           FontWeight="SemiBold"
+                           Style="{ThemeResource FluentTitleTextStyle}"
                            Margin="0,0,0,12"/>
                 <ListView x:Name="lvFailureList"
                           Grid.Row="1"
